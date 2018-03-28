@@ -43,40 +43,11 @@ LOGGER.info("Legal Actions: #{LEGAL_ACTIONS}")
 LOGGER.info("Minimal Actions: #{MINIMAL_ACTIONS}")
 
 
-# scope = Tensorflow::Scope.new('steps')
-# graph = scope.graph
-
-# build graph
-# tensor_1 = Tensorflow::Tensor.new([2])
-
-
-# tensor_1 = Tensorflow::Tensor.new([[2, 23, 10, 6]])
-# tensor_2 = Tensorflow::Tensor.new([[22, 3, 7, 12]])
-
-# opspec = Tensorflow::OpSpec.new('step/step', 'Variable', , [placeholder_1, placeholder_2])
-# opspec = Tensorflow::OpSpec.new('', 'Const', 'dtype' => {value.type_num => 'DataType'}, 'value' => {value => 'tensor'})
-# variable_1 = ops
-# ph = Tensorflow::OpSpec.new('tensor1', 'Placeholder', 'dtype' => { tensor_1.type_num => 'DataType'})
-# placeholder_1 = graph.AddOperation(ph).output(0)
-
-# var = Tensorflow::OpSpec.new('tensor1', 'Variable', 'dtype' => { tensor_1.type_num => 'DataType'})
-# variable_1 = graph.AddOperation(var).output(0)
-# placeholder_1 = graph.placeholder('tensor1', tensor_1.type_num)
-# placeholder_2 = graph.placeholder('tensor2', tensor_2.type_num)
-
-# opspec = Tensorflow::OpSpec.new('Addition_of_tensors', 'Add', nil, [placeholder_1, placeholder_2])
-# opspec2 = Tensorflow::OpSpec.new('Assign', 'Assign', nil, [variable_1, placeholder_2])
-# op = graph.AddOperation(opspec)
-# op = graph.AddOperation(opspec2)
-
-# step_input = graph.placeholder('step/step_input', tensor_1.type_num)
-# output = graph.AddOperation(Tensorflow::OpSpec.new('step/step', 'Variable'))
-# op = graph.AddOperation(Tensorflow::OpSpec.new('step/Assign', 'Assign', nil, [step_input, output.output(0)]))
-# op = graph.AddOperation(Tensorflow::OpSpec.new('step/Assign', 'Assign', nil, [output.output(0), step_input]))
-# output = graph.AddOperation(Tensorflow::OpSpec.new('step/Add', 'Add', nil, [output.output(0), Const(scope.subscope('step'), 1.00, :float)])).output(0)
-
-# session_op = Tensorflow::Session_options.new
-# session = Tensorflow::Session.new(graph, session_op)
+scope = Tensorflow::Scope.new('steps')
+graph = scope.graph
+graph.read_file("dqn.pb")
+session_op = Tensorflow::Session_options.new
+session = Tensorflow::Session.new(graph, session_op)
 # hash = {}
 # hash[step_input] = tensor_1
 # hash[placeholder_1] = tensor_1
@@ -86,7 +57,6 @@ LOGGER.info("Minimal Actions: #{MINIMAL_ACTIONS}")
 # binding.pry
 # puts out_tensor[0]
 # graph.write_file("results.pb")
-# graph.read_file("dqn.pb")
 # system "python tensorboard.py `pwd`/logs"
 # out_tensor = session.run({}, [output], [])
 
