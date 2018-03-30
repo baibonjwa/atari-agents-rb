@@ -38,10 +38,11 @@ def graphdef_to_board(filename, directory):
 if sys.argv[1]:
     directory = sys.argv[1]
 else:
-    directory = "/home/arafat/Desktop/test"
+    directory = "/home/happybai/atari-agents-rb"
 # if (os.path.isdir(directory)):
 #    shutil.rmtree(directory)
 
 # Name of the file to be converted
-filename = 'a.pb'
+# filename = 'dqn-init.pb'
+filename = 'results.pb'
 graphdef_to_board(filename, directory)
