@@ -8,7 +8,7 @@ class History
 
   def add(screen)
     @history[0..2, 0..83, 0..83] = @history[1..3, 0..83, 0..83]
-    @history[-1, 0..83, 0..83] = imresize(screen, 84, 84)
+    @history[-1, 0..83, 0..83] = screen
   end
 
   def reset
