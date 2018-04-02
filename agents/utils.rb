@@ -10,7 +10,7 @@ def save_screen_record(dir_path)
   end
 
   file_name = "#{dir_path}/#{Time.now.to_f * 10000}"
-  sequence = ImageList.new(*Dir["#{dir_path}/*.jpg"].sort)
+  sequence = ImageList.new(*Dir["#{dir}/*.jpg"].sort)
   sequence.delay = 2
   sequence.ticks_per_second = 60
   sequence.write("#{file_name}.mp4")

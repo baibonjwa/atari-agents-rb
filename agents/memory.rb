@@ -1,6 +1,6 @@
 require 'nmatrix'
 
-class Memory
+class ReplayMemory
   def initialize(memory_size=10000)
     @memory_size = memory_size
     @memory = []

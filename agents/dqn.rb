@@ -2,23 +2,36 @@ require 'nmatrix'
 require_relative 'history'
 require_relative 'memory'
 
-class Agent
-  def initialize(config, env, scope)
+class DQNAgent
+  attr_accessor :e
+
+  def initialize(config, env, sess, graph)
     @config = config
     @env = env
-    @sess = scope
-
-    @history = History.new(config)
-    @memory = ReplayMemory.new(config)
+    @graph = graph
+    @legal_actions = env.get_legal_action_set()
+    @minimal_actions = env.get_minimal_action_set()
+    @history = History.new
+    @memory = ReplayMemory.new
   end
 
-  def train
+  def act
+    # if rand(0) < @e || step < @config[:pre_train_step]
+    #   a = rand(@legal_actions.length)
+    # else
+    #   hash = {}
+    #   a = @sess.run(hash, [graph.operation('prediction/ArgMax').output(0)], []);
+    # end
+    a = rand(@legal_actions.length)
+    reward = @env.act(a)
+    obs = @env.get_screen_RGB()
+    done = @env.game_over()
+    [a, obs, reward, done]
   end
 
-  def predict
-  end
-
-  def observe
+  def learn(step, obs, reward, action, done)
+    total_loss, total_q, update_count, s1, loss, e = 100, 200, 299, nil, 100, 0.87
+    [total_loss, total_q, update_count, s1, loss, e]
   end
 
   def q_learning_mini_batch
