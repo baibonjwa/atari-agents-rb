@@ -7,8 +7,8 @@ class ReplayMemory
 
   def initialize(memory_size = 10_000)
     @memory_size = memory_size
-    @actions = NMatrix.zeros [memory_size], dtype: :int64
-    @rewards = NMatrix.zeros [memory_size], dtype: :int64
+    @actions = NMatrix.zeros [memory_size], dtype: :int16
+    @rewards = NMatrix.zeros [memory_size], dtype: :int16
     @screens = NMatrix.zeros [memory_size, 84, 84], dtype: :float32
     @terminals = NMatrix.new [memory_size], dtype: :object
     @history_length = 4
@@ -38,7 +38,9 @@ class ReplayMemory
     indexes = []
     while indexes.length < @batch_size
       while true
-        index = rand(@history_length..@count - 1)
+        # TODO: why is here out of range?
+        # index = rand(@history_length..@count - 1)
+        index = rand(@history_length..@count - 2)
         next if index >= @current && index - @history_length < @current
         next if @terminals[(index - @history_length)..index].any?
         break

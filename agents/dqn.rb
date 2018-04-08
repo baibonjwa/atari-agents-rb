@@ -23,15 +23,15 @@ class DQNAgent
   end
 
   def act(step)
-    # binding.pry
     if rand(0) < @e || step < @config[:pre_train_steps]
       a = rand(@minimal_actions.length)
     else
       hash = {}
-      hash[@graph.operation('prediction/s_t')] = @history.get
+      tensor_s_t = Tensorflow::Tensor.new(@history.get.to_a, :float)
+      hash[@graph.operation('prediction/s_t').output(0)] = tensor_s_t
       a = @sess.run(hash, [@graph.operation('prediction/ArgMax').output(0)], []);
+      a = a.flatten[0]
     end
-    # a = rand(@legal_actions.length)
     reward = @env.act(a)
     # obs = @env.get_screen_RGB()
     obs = imresize(@env.get_screen_grayscale(), 84, 84)
@@ -57,14 +57,15 @@ class DQNAgent
         terminal = terminal.map { |t| t ? 1 : 0 }
         target_q_t = ((-N[terminal] + 1.0) * 0.99).reshape([32]) * q_t_plus_one.max(1).reshape(32) + NMatrix.new([32], reward)
         hash = {}
-        tensor_target_q_t = Tensorflow::Tensor.new(target_q_t.to_a, :float)
         tensor_action = Tensorflow::Tensor.new(action.to_a, :int64)
         tensor_learning_rate_step = Tensorflow::Tensor.new(step, :int64)
+        tensor_target_q_t = Tensorflow::Tensor.new(target_q_t.to_a, :float)
         hash[@graph.operation('optimizer/target_q_t').output(0)] = tensor_target_q_t
         hash[@graph.operation('optimizer/action').output(0)] = tensor_action
         hash[@graph.operation('prediction/s_t').output(0)] = tensor_s_t
         hash[@graph.operation('optimizer/learning_rate_step').output(0)] = tensor_learning_rate_step
         q_t, loss = @sess.run(hash, [@graph.operation('prediction/q/BiasAdd').output(0), @graph.operation('optimizer/loss').output(0)], [])
+
         @total_loss += loss.first
         @total_q += N[q_t].reshape(32, 4).mean.mean(1).to_f
         @update_count += 1
@@ -76,22 +77,29 @@ class DQNAgent
     [@total_loss, @total_q, @update_count, obs, loss, @e]
   end
 
-  def q_learning_mini_batch
-  end
-
-  def build_dqn
-  end
-
   def update_target_q_network
-  end
-
-  def save_weight_to_pkl
-  end
-
-  def load_weight_from_pkl
-  end
-
-  def inject_summary
+    nodes = %w[
+      prediction/l1
+      prediction/l1_b
+      prediction/l2_w
+      prediction/l2_b
+      prediction/l3_w
+      prediction/l3_b
+      prediction/l4_w
+      prediction/l4_b
+      prediction/q_w
+      prediction/q_b
+      target/target_l1
+      target/target_l1_b
+      target/target_l2_w
+      target/target_l2_b
+      target/target_l3_w
+      target/target_l3_b
+      target/target_l4_w
+      target/target_l4_b
+      target/target_q_w
+      target/target_q_b
+    ]
   end
 
   def play

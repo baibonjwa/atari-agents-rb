@@ -44,5 +44,5 @@ else:
 
 # Name of the file to be converted
 # filename = 'dqn-init.pb'
-filename = 'results.pb'
+filename = 'dqn-frozen.pb'
 graphdef_to_board(filename, directory)

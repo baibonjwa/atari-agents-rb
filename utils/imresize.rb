@@ -14,7 +14,7 @@ def imresize(screen, height, width)
   session_op = Tensorflow::Session_options.new
   session = Tensorflow::Session.new(graph, session_op)
   out_tensor = session.run({}, [output], [])
-  n = N[out_tensor]
+  n = N[out_tensor, dtype: :float32]
   shape = n.shape
   shape.delete(1)
   n.reshape(shape)
