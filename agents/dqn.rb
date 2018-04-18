@@ -65,6 +65,10 @@ class DQNAgent
     [a, obs, reward, done]
   end
 
+  def add_history(obs)
+    @history.add(obs)
+  end
+
   def learn(step, obs, reward, action, done)
     @history.add(obs)
     @memory.add(obs, reward, action, done)
@@ -130,6 +134,15 @@ class DQNAgent
   end
 
   def play
+    a = 0
+    hash = {}
+    tensor_s_t = Tensorflow::Tensor.new(@history.get.to_a, :float)
+    hash[@graph.operation('main/input_data').output(0)] = tensor_s_t
+    a = @sess.run(hash, [@graph.operation('main/ArgMax').output(0)], []);
+    a = a.flatten[0]
+    reward = @env.act(a)
+    obs = imresize(@env.get_screen_grayscale(), 84, 84)
+    done = @env.game_over()
+    [a, obs, reward, done]
   end
-
 end
